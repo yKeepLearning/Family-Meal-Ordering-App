@@ -93,7 +93,7 @@ Page({
       const dish = findDish(id)
       if (dish) {
         const cat = MENU.find(c => c.dishes.some(d => d.id === id))
-        items.push({ dish, quantity: cart[id], categoryName: cat?.name || '' })
+        items.push({ dish, quantity: cart[id], categoryName: (cat && cat.name) || '' })
       }
     }
     if (items.length === 0) return

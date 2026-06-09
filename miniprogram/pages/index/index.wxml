@@ -7,7 +7,6 @@
 
     <!-- 顶部标题栏 -->
     <view class="header-bar">
-      <text class="header-sup">家庭聚餐</text>
       <text class="header-title">家庭点菜</text>
       <text class="header-desc">选好菜品后提交，厨师马上为您准备</text>
     </view>
@@ -54,25 +53,23 @@
               </view>
             </view>
             <text class="dish-desc">{{item.description}}</text>
-            <view class="qty-row">
-              <view class="qty-controls">
-                <view
-                  wx:if="{{cart[item.id] && cart[item.id] > 0}}"
-                  class="qty-btn qty-btn-minus"
-                  bind:tap="onCartUpdate"
-                  data-id="{{item.id}}"
-                  data-delta="{{-1}}"
-                >−
-                </view>
-                <text wx:if="{{cart[item.id] && cart[item.id] > 0}}" class="qty-num">{{cart[item.id]}}</text>
-                <view
-                  class="qty-btn qty-btn-plus"
-                  bind:tap="onCartUpdate"
-                  data-id="{{item.id}}"
-                  data-delta="{{1}}"
-                >+
-                </view>
-              </view>
+          </view>
+          <view class="qty-controls">
+            <view
+              wx:if="{{cart[item.id] && cart[item.id] > 0}}"
+              class="qty-btn qty-btn-minus"
+              bind:tap="onCartUpdate"
+              data-id="{{item.id}}"
+              data-delta="{{-1}}"
+            >−
+            </view>
+            <text wx:if="{{cart[item.id] && cart[item.id] > 0}}" class="qty-num">{{cart[item.id]}}</text>
+            <view
+              class="qty-btn qty-btn-plus"
+              bind:tap="onCartUpdate"
+              data-id="{{item.id}}"
+              data-delta="{{1}}"
+            >+
             </view>
           </view>
         </view>
@@ -135,10 +132,6 @@
   <view wx:elif="{{view === 'chef'}}" class="view-chef">
 
     <view class="chef-header">
-      <view class="chef-header-top">
-        <text class="chef-header-icon">👨‍🍳</text>
-        <text class="chef-header-sup">厨房显示屏</text>
-      </view>
       <text class="chef-header-title">厨师工作台</text>
       <view class="chef-stats">
         <view class="chef-stat">
