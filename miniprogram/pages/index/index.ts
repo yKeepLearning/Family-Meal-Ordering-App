@@ -52,6 +52,7 @@ Page({
 
     submitted: false,
     submitting: false,
+    searchQuery: '',
     orderCounter: 1,
   },
 
@@ -62,6 +63,35 @@ Page({
     this.setData({
       activeCategory: id,
       activeDishes: cat.dishes,
+      searchQuery: '',
+    })
+  },
+
+  onSearchInput(e: WechatMiniprogram.Input) {
+    const query = e.detail.value
+    this.setData({ searchQuery: query })
+    if (!query) {
+      const cat = MENU.find(c => c.id === this.data.activeCategory)
+      this.setData({ activeDishes: cat ? cat.dishes : [] })
+      return
+    }
+    const q = query.toLowerCase()
+    const results: typeof MENU[0]['dishes'] = []
+    for (const cat of MENU) {
+      for (const dish of cat.dishes) {
+        if (dish.name.includes(q) || dish.name.includes(query) || (dish.tags && dish.tags.some(t => t.includes(q) || t.includes(query)))) {
+          results.push(dish)
+        }
+      }
+    }
+    this.setData({ activeDishes: results })
+  },
+
+  onClearSearch() {
+    const cat = MENU.find(c => c.id === this.data.activeCategory)
+    this.setData({
+      searchQuery: '',
+      activeDishes: cat ? cat.dishes : [],
     })
   },
 

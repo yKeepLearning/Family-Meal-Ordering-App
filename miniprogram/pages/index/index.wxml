@@ -11,6 +11,15 @@
       <text class="header-desc">选好菜品后提交，厨师马上为您准备</text>
     </view>
 
+    <!-- 搜索栏 -->
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <text class="search-icon">🔍</text>
+        <input class="search-input" placeholder="搜菜品…" value="{{searchQuery}}" bind:input="onSearchInput" />
+        <text wx:if="{{searchQuery}}" class="search-clear" hover-class="press-dim" hover-start-time="50" bind:tap="onClearSearch">✕</text>
+      </view>
+    </view>
+
     <!-- 分类标签 + 菜品列表（左右布局） -->
     <view class="customer-body">
       <scroll-view class="category-scroll" scroll-y>
