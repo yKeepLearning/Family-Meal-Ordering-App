@@ -51,6 +51,7 @@ Page({
     pendingCount: 0,
 
     submitted: false,
+    submitting: false,
     orderCounter: 1,
   },
 
@@ -87,6 +88,7 @@ Page({
   },
 
   onSubmitOrder() {
+    if (this.data.submitting) return
     const { cart, note, orderCounter } = this.data
     const items: OrderItem[] = []
     for (const id of Object.keys(cart)) {
@@ -97,6 +99,8 @@ Page({
       }
     }
     if (items.length === 0) return
+
+    this.setData({ submitting: true })
 
     const now = new Date()
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
@@ -124,7 +128,7 @@ Page({
     this._recalcOrders()
 
     setTimeout(() => {
-      this.setData({ submitted: false })
+      this.setData({ submitted: false, submitting: false })
     }, 3000)
   },
 

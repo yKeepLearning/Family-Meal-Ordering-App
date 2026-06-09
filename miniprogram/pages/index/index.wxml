@@ -19,6 +19,8 @@
             wx:for="{{menu}}"
             wx:key="id"
             class="category-tab {{activeCategory === item.id ? 'category-tab-active' : ''}}"
+            hover-class="press-dim"
+            hover-start-time="50"
             bind:tap="onCategoryTap"
             data-id="{{item.id}}"
           >
@@ -57,7 +59,7 @@
             <view class="qty-controls">
               <view
                 wx:if="{{cart[item.id] && cart[item.id] > 0}}"
-                class="qty-btn qty-btn-minus"
+                class="qty-btn qty-btn-minus press-scale"
                 bind:tap="onCartUpdate"
                 data-id="{{item.id}}"
                 data-delta="{{-1}}"
@@ -65,7 +67,7 @@
               </view>
               <text wx:if="{{cart[item.id] && cart[item.id] > 0}}" class="qty-num">{{cart[item.id]}}</text>
               <view
-                class="qty-btn qty-btn-plus"
+                class="qty-btn qty-btn-plus press-scale"
                 bind:tap="onCartUpdate"
                 data-id="{{item.id}}"
                 data-delta="{{1}}"
@@ -88,7 +90,8 @@
           <text class="cart-item-name">{{item.emoji}} {{item.name}}</text>
           <view class="cart-item-controls">
             <view
-              class="qty-btn qty-btn-minus qty-btn-sm"
+              class="qty-btn qty-btn-minus qty-btn-sm press-scale"
+              hover-start-time="50"
               bind:tap="onCartUpdate"
               data-id="{{item.id}}"
               data-delta="{{-1}}"
@@ -96,7 +99,8 @@
             </view>
             <text class="cart-item-qty">{{item.qty}}</text>
             <view
-              class="qty-btn qty-btn-plus qty-btn-sm"
+              class="qty-btn qty-btn-plus qty-btn-sm press-scale"
+              hover-start-time="50"
               bind:tap="onCartUpdate"
               data-id="{{item.id}}"
               data-delta="{{1}}"
@@ -106,7 +110,7 @@
         </view>
         <textarea
           class="cart-note"
-          placeholder="给厨师的备注（过敏食材、辣度要求等）"
+          placeholder="备注（忌口、辣度等）"
           value="{{note}}"
           bind:input="onNoteInput"
           maxlength="200"
@@ -114,7 +118,7 @@
       </view>
 
       <view class="cart-actions">
-        <view class="cart-summary" bind:tap="onToggleCart">
+        <view class="cart-summary" hover-class="press-dim" hover-start-time="50" bind:tap="onToggleCart">
           <view class="cart-bag-wrap">
             <text class="cart-bag-icon">🛍️</text>
             <text class="cart-badge">{{totalItems}}</text>
@@ -122,8 +126,8 @@
           <text class="cart-label">已选 {{totalItems}} 道菜</text>
           <text class="cart-chevron {{showCart ? 'cart-chevron-open' : ''}}">▶</text>
         </view>
-        <view class="cart-submit" bind:tap="onSubmitOrder">
-          <text class="cart-submit-text">提交点菜</text>
+        <view class="cart-submit {{submitting ? 'cart-submit-disabled' : ''}}" hover-class="press-scale" bind:tap="onSubmitOrder">
+          <text class="cart-submit-text">{{submitting ? '提交中…' : '提交点菜'}}</text>
         </view>
       </view>
     </view>
@@ -155,9 +159,11 @@
         <view
           wx:for="{{filters}}"
           wx:key="value"
-          class="filter-tab {{chefFilter === item.value ? 'filter-tab-active' : ''}}"
-          bind:tap="onFilterTap"
-          data-value="{{item.value}}"
+           class="filter-tab {{chefFilter === item.value ? 'filter-tab-active' : ''}}"
+           hover-class="press-dim"
+           hover-start-time="50"
+           bind:tap="onFilterTap"
+           data-value="{{item.value}}"
         >
           <text>{{item.label}}</text>
         </view>
@@ -167,7 +173,7 @@
     <scroll-view class="order-scroll" scroll-y>
       <view wx:if="{{filteredOrders.length === 0}}" class="order-empty">
         <text class="order-empty-icon">🔥</text>
-        <text class="order-empty-text">暂无订单，厨房还在等待中</text>
+        <text class="order-empty-text">暂无订单，顾客提交后会自动显示</text>
       </view>
 
       <view
@@ -192,7 +198,8 @@
           <view class="order-header-right">
             <view
               wx:if="{{item.status === 'pending'}}"
-              class="order-btn order-btn-begin"
+              class="order-btn order-btn-begin press-scale"
+              hover-start-time="50"
               bind:tap="onUpdateStatus"
               data-id="{{item.id}}"
               data-status="preparing"
@@ -201,7 +208,8 @@
             </view>
             <view
               wx:elif="{{item.status === 'preparing'}}"
-              class="order-btn order-btn-done"
+              class="order-btn order-btn-done press-scale"
+              hover-start-time="50"
               bind:tap="onUpdateStatus"
               data-id="{{item.id}}"
               data-status="ready"
@@ -247,6 +255,8 @@
   <view class="bottom-nav">
     <view
       class="bottom-nav-item {{view === 'customer' ? 'bottom-nav-active' : ''}}"
+      hover-class="press-dim"
+      hover-start-time="50"
       bind:tap="onSwitchView"
       data-view="customer"
     >
@@ -256,6 +266,8 @@
     <view class="bottom-nav-divider"></view>
     <view
       class="bottom-nav-item {{view === 'chef' ? 'bottom-nav-active' : ''}}"
+      hover-class="press-dim"
+      hover-start-time="50"
       bind:tap="onSwitchView"
       data-view="chef"
     >
