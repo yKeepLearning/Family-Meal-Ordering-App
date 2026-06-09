@@ -3,3 +3,4 @@ miniprogram_npm/
 .env
 *.log
 .DS_Store
+**/skills/
