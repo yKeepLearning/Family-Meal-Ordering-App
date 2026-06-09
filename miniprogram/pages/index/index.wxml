@@ -1,0 +1,279 @@
+<wxs src="./index.wxs" module="util" />
+
+<view class="page-container">
+
+  <!-- ===== 顾客点菜视图 ===== -->
+  <view wx:if="{{view === 'customer'}}" class="view-customer">
+
+    <!-- 顶部标题栏 -->
+    <view class="header-bar">
+      <text class="header-sup">家庭聚餐</text>
+      <text class="header-title">家庭点菜</text>
+      <text class="header-desc">选好菜品后提交，厨师马上为您准备</text>
+    </view>
+
+    <!-- 分类标签 -->
+    <scroll-view class="category-scroll" scroll-x>
+      <view class="category-list">
+        <view
+          wx:for="{{menu}}"
+          wx:key="id"
+          class="category-tab {{activeCategory === item.id ? 'category-tab-active' : ''}}"
+          bind:tap="onCategoryTap"
+          data-id="{{item.id}}"
+        >
+          <text class="category-emoji">{{item.emoji}}</text>
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 菜品列表 -->
+    <scroll-view class="dish-scroll" scroll-y>
+      <view class="dish-list">
+        <view
+          wx:for="{{activeDishes}}"
+          wx:key="id"
+          class="dish-card"
+        >
+          <view class="dish-icon-wrap">
+            <text class="dish-icon">{{item.emoji}}</text>
+          </view>
+          <view class="dish-info">
+            <view class="dish-name-row">
+              <text class="dish-name">{{item.name}}</text>
+            </view>
+            <view wx:if="{{item.tags && item.tags.length > 0}}" class="tag-row">
+              <view
+                wx:for="{{item.tags}}"
+                wx:for-item="tag"
+                wx:key="this"
+                class="tag {{util.getTagStyle(tag)}}">
+                <text wx:if="{{util.getTagIcon(tag)}}" class="tag-icon">{{util.getTagIcon(tag)}}</text>
+                <text>{{tag}}</text>
+              </view>
+            </view>
+            <text class="dish-desc">{{item.description}}</text>
+            <view class="qty-row">
+              <view class="qty-controls">
+                <view
+                  wx:if="{{cart[item.id] && cart[item.id] > 0}}"
+                  class="qty-btn qty-btn-minus"
+                  bind:tap="onCartUpdate"
+                  data-id="{{item.id}}"
+                  data-delta="{{-1}}"
+                >−
+                </view>
+                <text wx:if="{{cart[item.id] && cart[item.id] > 0}}" class="qty-num">{{cart[item.id]}}</text>
+                <view
+                  class="qty-btn qty-btn-plus"
+                  bind:tap="onCartUpdate"
+                  data-id="{{item.id}}"
+                  data-delta="{{1}}"
+                >+
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 购物车栏 -->
+    <view wx:if="{{totalItems > 0}}" class="cart-bar">
+      <view wx:if="{{showCart}}" class="cart-detail">
+        <view
+          wx:for="{{cartItems}}"
+          wx:key="id"
+          class="cart-item-row"
+        >
+          <text class="cart-item-name">{{item.emoji}} {{item.name}}</text>
+          <view class="cart-item-controls">
+            <view
+              class="qty-btn qty-btn-minus qty-btn-sm"
+              bind:tap="onCartUpdate"
+              data-id="{{item.id}}"
+              data-delta="{{-1}}"
+            >−
+            </view>
+            <text class="cart-item-qty">{{item.qty}}</text>
+            <view
+              class="qty-btn qty-btn-plus qty-btn-sm"
+              bind:tap="onCartUpdate"
+              data-id="{{item.id}}"
+              data-delta="{{1}}"
+            >+
+            </view>
+          </view>
+        </view>
+        <textarea
+          class="cart-note"
+          placeholder="给厨师的备注（过敏食材、辣度要求等）"
+          value="{{note}}"
+          bind:input="onNoteInput"
+          maxlength="200"
+        />
+      </view>
+
+      <view class="cart-actions">
+        <view class="cart-summary" bind:tap="onToggleCart">
+          <view class="cart-bag-wrap">
+            <text class="cart-bag-icon">🛍️</text>
+            <text class="cart-badge">{{totalItems}}</text>
+          </view>
+          <text class="cart-label">已选 {{totalItems}} 道菜</text>
+          <text class="cart-chevron {{showCart ? 'cart-chevron-open' : ''}}">▶</text>
+        </view>
+        <view class="cart-submit" bind:tap="onSubmitOrder">
+          <text class="cart-submit-text">提交点菜</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 厨房视图 ===== -->
+  <view wx:elif="{{view === 'chef'}}" class="view-chef">
+
+    <view class="chef-header">
+      <view class="chef-header-top">
+        <text class="chef-header-icon">👨‍🍳</text>
+        <text class="chef-header-sup">厨房显示屏</text>
+      </view>
+      <text class="chef-header-title">厨师工作台</text>
+      <view class="chef-stats">
+        <view class="chef-stat">
+          <view class="chef-stat-dot chef-stat-dot-pending"></view>
+          <text class="chef-stat-text">{{orderCounts.pending}} 待处理</text>
+        </view>
+        <view class="chef-stat">
+          <view class="chef-stat-dot chef-stat-dot-preparing"></view>
+          <text class="chef-stat-text">{{orderCounts.preparing}} 备菜中</text>
+        </view>
+        <view class="chef-stat">
+          <view class="chef-stat-dot chef-stat-dot-ready"></view>
+          <text class="chef-stat-text">{{orderCounts.ready}} 已完成</text>
+        </view>
+      </view>
+    </view>
+
+    <scroll-view class="filter-scroll" scroll-x>
+      <view class="filter-list">
+        <view
+          wx:for="{{filters}}"
+          wx:key="value"
+          class="filter-tab {{chefFilter === item.value ? 'filter-tab-active' : ''}}"
+          bind:tap="onFilterTap"
+          data-value="{{item.value}}"
+        >
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <scroll-view class="order-scroll" scroll-y>
+      <view wx:if="{{filteredOrders.length === 0}}" class="order-empty">
+        <text class="order-empty-icon">🔥</text>
+        <text class="order-empty-text">暂无订单，厨房还在等待中</text>
+      </view>
+
+      <view
+        wx:for="{{filteredOrders}}"
+        wx:key="id"
+        class="order-card"
+      >
+        <view class="order-header">
+          <view class="order-header-left">
+            <view class="order-id-row">
+              <text class="order-id">第 {{item.displayId}} 单</text>
+              <view class="order-status-badge {{'order-status-' + item.status}}">
+                <view class="order-status-dot {{'order-dot-' + item.status}}"></view>
+                <text>{{item.statusLabel}}</text>
+              </view>
+            </view>
+            <view class="order-time-row">
+              <text class="order-time-icon">🕐</text>
+              <text class="order-time">{{item.submittedAt}}</text>
+            </view>
+          </view>
+          <view class="order-header-right">
+            <view
+              wx:if="{{item.status === 'pending'}}"
+              class="order-btn order-btn-begin"
+              bind:tap="onUpdateStatus"
+              data-id="{{item.id}}"
+              data-status="preparing"
+            >
+              <text>开始备菜</text>
+            </view>
+            <view
+              wx:elif="{{item.status === 'preparing'}}"
+              class="order-btn order-btn-done"
+              bind:tap="onUpdateStatus"
+              data-id="{{item.id}}"
+              data-status="ready"
+            >
+              <text>完成 ✓</text>
+            </view>
+            <text wx:elif="{{item.status === 'ready'}}" class="order-check">✅</text>
+          </view>
+        </view>
+
+        <view class="order-body">
+          <view
+            wx:for="{{item.groupedItems}}"
+            wx:for-item="group"
+            wx:key="cat"
+            class="order-group"
+          >
+            <text class="order-group-title">{{group.cat}}</text>
+            <view
+              wx:for="{{group.items}}"
+              wx:for-item="oi"
+              wx:key="dish.id"
+              class="order-dish-row"
+            >
+              <view class="order-dish-left">
+                <text class="order-dish-emoji">{{oi.dish.emoji}}</text>
+                <text class="order-dish-name">{{oi.dish.name}}</text>
+              </view>
+              <text class="order-dish-qty">×{{oi.quantity}}</text>
+            </view>
+          </view>
+
+          <view wx:if="{{item.note}}" class="order-note">
+            <text class="order-note-icon">📝</text>
+            <text class="order-note-text">{{item.note}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ===== 底部导航 ===== -->
+  <view class="bottom-nav">
+    <view
+      class="bottom-nav-item {{view === 'customer' ? 'bottom-nav-active' : ''}}"
+      bind:tap="onSwitchView"
+      data-view="customer"
+    >
+      <text class="nav-icon">🍽️</text>
+      <text class="nav-label">点菜</text>
+    </view>
+    <view class="bottom-nav-divider"></view>
+    <view
+      class="bottom-nav-item {{view === 'chef' ? 'bottom-nav-active' : ''}}"
+      bind:tap="onSwitchView"
+      data-view="chef"
+    >
+      <view class="nav-icon-wrap">
+        <text class="nav-icon">👨‍🍳</text>
+        <text wx:if="{{pendingCount > 0}}" class="nav-badge">{{pendingCount}}</text>
+      </view>
+      <text class="nav-label">厨房</text>
+    </view>
+  </view>
+
+  <!-- 提交成功提示 -->
+  <view wx:if="{{submitted}}" class="toast-submit">✅ 已成功发送至厨房！</view>
+
+</view>

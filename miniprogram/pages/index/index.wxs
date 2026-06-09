@@ -1,0 +1,27 @@
+var TAG_STYLES = {
+  '热门': 'tag-hot',
+  '厨师推荐': 'tag-chef',
+  '家庭最爱': 'tag-family',
+  '辣': 'tag-spicy',
+  '时令': 'tag-seasonal',
+  '养生': 'tag-wellness',
+}
+
+var TAG_ICONS = {
+  '辣': '🌶️',
+  '养生': '🌿',
+  '厨师推荐': '⭐',
+}
+
+function getTagStyle(tag) {
+  return TAG_STYLES[tag] || 'tag-default'
+}
+
+function getTagIcon(tag) {
+  return TAG_ICONS[tag] || ''
+}
+
+module.exports = {
+  getTagStyle: getTagStyle,
+  getTagIcon: getTagIcon,
+}

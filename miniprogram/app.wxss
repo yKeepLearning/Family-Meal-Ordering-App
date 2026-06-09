@@ -1,0 +1,32 @@
+/** 设计系统 Tokens - 源自 Figma **/
+page {
+  --background: #fdf6ee;
+  --foreground: #1e1208;
+  --card: #fff9f2;
+  --card-foreground: #1e1208;
+  --primary: #c0392b;
+  --primary-foreground: #ffffff;
+  --secondary: #f5e6d3;
+  --secondary-foreground: #1e1208;
+  --muted: #ede0d0;
+  --muted-foreground: #7a6150;
+  --accent: #e8834a;
+  --accent-foreground: #ffffff;
+  --border: rgba(160, 100, 60, 0.18);
+  --input-background: #f5e6d3;
+  --radius: 12px;
+  --font-size: 16px;
+  --font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-title: 'Lora', Georgia, serif;
+
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  height: 100vh;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  background: var(--background);
+  color: var(--foreground);
+
+  /* WeChat 小程序无法加载 Google Fonts，使用系统字体回退 */
+}
+
+
