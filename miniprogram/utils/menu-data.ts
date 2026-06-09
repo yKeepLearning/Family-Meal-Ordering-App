@@ -30,18 +30,28 @@ export interface Order {
 export const MENU: Category[] = [
   {
     id: 'chef-special',
-    name: '主厨拿手菜',
+    name: '主厨力荐',
     emoji: '👨‍🍳',
     dishes: [
-      { id: 'cs-bobo-chicken', name: '钵钵鸡', description: '冷吃鸡肉串浸润红油芝麻，麻辣鲜香，回味悠长', emoji: '🐔', tags: ['厨师推荐', '辣'] },
       { id: 'cs-braised-chicken', name: '红烧鸡', description: '土鸡块以酱油冰糖烧制，酱香浓郁，肉质紧实饱满', emoji: '🍗', tags: ['厨师推荐'] },
-      { id: 'cs-pepper-egg', name: '烧椒皮蛋', description: '青椒烤至焦香配溏心皮蛋，口感层次丰富，开胃凉菜', emoji: '🥚', tags: ['辣', '时令'] },
-      { id: 'cs-rib-soup', name: '排骨汤', description: '猪骨慢炖至汤色奶白，加入玉米萝卜，清甜滋补', emoji: '🍖', tags: ['养生'] },
+      { id: 'cs-pork-belly', name: '红烧肉', description: '五花肉以酱油、糖与绍兴黄酒慢炖，入口即化，色泽红亮', emoji: '🍖', tags: ['家庭最爱', '厨师推荐'] },
+      { id: 'cs-gongbao', name: '宫保鸡丁', description: '干辣椒与花生碎爆炒，麻辣鲜香，下饭神器', emoji: '🍗', tags: ['热门', '辣'] },
+      { id: 'cs-fish', name: '红烧鱼', description: '整条鱼配姜葱与酱汁红烧，鱼肉鲜嫩，汤汁浓郁', emoji: '🐟', tags: ['热门'] },
+    ],
+  },
+  {
+    id: 'appetizer',
+    name: '开胃凉菜',
+    emoji: '🥗',
+    dishes: [
+      { id: 'ap-bobo-chicken', name: '钵钵鸡', description: '冷吃鸡肉串浸润红油芝麻，麻辣鲜香，回味悠长', emoji: '🐔', tags: ['厨师推荐', '辣'] },
+      { id: 'ap-pepper-egg', name: '烧椒皮蛋', description: '青椒烤至焦香配溏心皮蛋，口感层次丰富，开胃凉菜', emoji: '🥚', tags: ['辣', '时令'] },
+      { id: 'ap-twice-pork', name: '蒜泥白肉', description: '薄切五花肉淋上蒜泥红油，肥而不腻，爽口开胃', emoji: '🥓', tags: ['厨师推荐'] },
     ],
   },
   {
     id: 'hotpot',
-    name: '火锅',
+    name: '火锅冒菜',
     emoji: '🍲',
     dishes: [
       { id: 'hp-beef-tripe', name: '毛肚', description: '嫩滑爽口，薄切处理，最适合在麻辣锅底中涮食', emoji: '🐄', tags: ['热门'] },
@@ -56,27 +66,46 @@ export const MENU: Category[] = [
   },
   {
     id: 'stirfry',
-    name: '炒菜',
+    name: '经典热菜',
     emoji: '🥘',
     dishes: [
-      { id: 'sf-gongbao', name: '宫保鸡丁', description: '干辣椒与花生碎爆炒，麻辣鲜香，下饭神器', emoji: '🍗', tags: ['热门', '辣'] },
       { id: 'sf-mapo', name: '麻婆豆腐', description: '嫩豆腐配豆瓣酱与肉末，麻辣鲜嫩，回味无穷', emoji: '🌶️', tags: ['辣'] },
       { id: 'sf-bokchoy', name: '蒜蓉青菜', description: '时令绿叶菜配香蒜爆炒，清爽提神，解腻必备', emoji: '🥬' },
       { id: 'sf-twicepork', name: '回锅肉', description: '五花肉配青蒜与甜面酱翻炒，香气扑鼻，经典川味', emoji: '🥓', tags: ['厨师推荐'] },
       { id: 'sf-egg-tomato', name: '番茄炒蛋', description: '家常必备，酸甜开胃，老少皆宜的温暖味道', emoji: '🍅', tags: ['家庭最爱'] },
       { id: 'sf-eggplant', name: '鱼香茄子', description: '茄子炖至软糯，浇上酸辣蒜香汁，浓郁入味', emoji: '🍆', tags: ['辣'] },
+      { id: 'sf-tofu-skin', name: '腐皮卷', description: '豆腐皮包裹馅料，在浓汤中慢炖入味，外韧内嫩', emoji: '🥟' },
     ],
   },
   {
-    id: 'stew',
-    name: '炖菜',
+    id: 'soup',
+    name: '养生汤羹',
     emoji: '🫕',
     dishes: [
-      { id: 'st-pork-belly', name: '红烧肉', description: '五花肉以酱油、糖与绍兴黄酒慢炖，入口即化，色泽红亮', emoji: '🍖', tags: ['家庭最爱', '厨师推荐'] },
-      { id: 'st-fish', name: '红烧鱼', description: '整条鱼配姜葱与酱汁红烧，鱼肉鲜嫩，汤汁浓郁', emoji: '🐟', tags: ['热门'] },
-      { id: 'st-chicken-soup', name: '老鸡汤', description: '长时间慢炖，加入枸杞，汤色金黄，温补滋养', emoji: '🍵', tags: ['养生'] },
-      { id: 'st-oxtail', name: '炖牛尾', description: '配根茎蔬菜慢炖，骨肉脱落，汤汁醇厚鲜美', emoji: '🦴', tags: ['时令'] },
-      { id: 'st-tofu-skin', name: '腐皮卷', description: '豆腐皮包裹馅料，在浓汤中慢炖入味，外韧内嫩', emoji: '🥟' },
+      { id: 'so-rib-soup', name: '排骨汤', description: '猪骨慢炖至汤色奶白，加入玉米萝卜，清甜滋补', emoji: '🍖', tags: ['养生'] },
+      { id: 'so-chicken-soup', name: '老鸡汤', description: '长时间慢炖，加入枸杞，汤色金黄，温补滋养', emoji: '🍵', tags: ['养生'] },
+      { id: 'so-oxtail', name: '炖牛尾', description: '配根茎蔬菜慢炖，骨肉脱落，汤汁醇厚鲜美', emoji: '🦴', tags: ['时令'] },
+    ],
+  },
+  {
+    id: 'dessert',
+    name: '水果甜点',
+    emoji: '🍰',
+    dishes: [
+      { id: 'de-fruit-platter', name: '水果拼盘', description: '时令鲜果精心搭配，清爽解腻，甜润可口', emoji: '🍉' },
+      { id: 'de-ice-jelly', name: '冰粉', description: '手搓冰粉配红糖水与花生碎，清凉滑嫩，夏日必备', emoji: '🧊', tags: ['热门'] },
+      { id: 'de-glutinous-rice', name: '红糖糍粑', description: '糯米糍粑炸至金黄，淋上红糖浆，外酥里糯', emoji: '🍡', tags: ['家庭最爱'] },
+    ],
+  },
+  {
+    id: 'drinks',
+    name: '酒水饮料',
+    emoji: '🥤',
+    dishes: [
+      { id: 'dr-cola', name: '可乐', description: '冰镇可口可乐，畅爽怡神', emoji: '🥤' },
+      { id: 'dr-sprite', name: '雪碧', description: '柠檬味冰爽汽水，清凉解渴', emoji: '🥤' },
+      { id: 'dr-herbal-tea', name: '王老吉', description: '传统凉茶配方，清热降火，吃辣必备', emoji: '🧃', tags: ['热门'] },
+      { id: 'dr-sour-plum', name: '酸梅汤', description: '古法熬制，酸甜生津，消食开胃', emoji: '🫗', tags: ['时令'] },
     ],
   },
 ]

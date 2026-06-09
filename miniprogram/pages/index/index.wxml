@@ -11,70 +11,71 @@
       <text class="header-desc">选好菜品后提交，厨师马上为您准备</text>
     </view>
 
-    <!-- 分类标签 -->
-    <scroll-view class="category-scroll" scroll-x>
-      <view class="category-list">
-        <view
-          wx:for="{{menu}}"
-          wx:key="id"
-          class="category-tab {{activeCategory === item.id ? 'category-tab-active' : ''}}"
-          bind:tap="onCategoryTap"
-          data-id="{{item.id}}"
-        >
-          <text class="category-emoji">{{item.emoji}}</text>
-          <text class="category-name">{{item.name}}</text>
-        </view>
-      </view>
-    </scroll-view>
-
-    <!-- 菜品列表 -->
-    <scroll-view class="dish-scroll" scroll-y>
-      <view class="dish-list">
-        <view
-          wx:for="{{activeDishes}}"
-          wx:key="id"
-          class="dish-card"
-        >
-          <view class="dish-icon-wrap">
-            <text class="dish-icon">{{item.emoji}}</text>
+    <!-- 分类标签 + 菜品列表（左右布局） -->
+    <view class="customer-body">
+      <scroll-view class="category-scroll" scroll-y>
+        <view class="category-list">
+          <view
+            wx:for="{{menu}}"
+            wx:key="id"
+            class="category-tab {{activeCategory === item.id ? 'category-tab-active' : ''}}"
+            bind:tap="onCategoryTap"
+            data-id="{{item.id}}"
+          >
+            <text class="category-emoji">{{item.emoji}}</text>
+            <text class="category-name">{{item.name}}</text>
           </view>
-          <view class="dish-info">
-            <view class="dish-name-row">
-              <text class="dish-name">{{item.name}}</text>
+        </view>
+      </scroll-view>
+
+      <scroll-view class="dish-scroll" scroll-y>
+        <view class="dish-list">
+          <view
+            wx:for="{{activeDishes}}"
+            wx:key="id"
+            class="dish-card"
+          >
+            <view class="dish-icon-wrap">
+              <text class="dish-icon">{{item.emoji}}</text>
             </view>
-            <view wx:if="{{item.tags && item.tags.length > 0}}" class="tag-row">
+            <view class="dish-info">
+              <view class="dish-name-row">
+                <text class="dish-name">{{item.name}}</text>
+              </view>
+              <view wx:if="{{item.tags && item.tags.length > 0}}" class="tag-row">
+                <view
+                  wx:for="{{item.tags}}"
+                  wx:for-item="tag"
+                  wx:key="this"
+                  class="tag {{util.getTagStyle(tag)}}">
+                  <text wx:if="{{util.getTagIcon(tag)}}" class="tag-icon">{{util.getTagIcon(tag)}}</text>
+                  <text>{{tag}}</text>
+                </view>
+              </view>
+              <text class="dish-desc">{{item.description}}</text>
+            </view>
+            <view class="qty-controls">
               <view
-                wx:for="{{item.tags}}"
-                wx:for-item="tag"
-                wx:key="this"
-                class="tag {{util.getTagStyle(tag)}}">
-                <text wx:if="{{util.getTagIcon(tag)}}" class="tag-icon">{{util.getTagIcon(tag)}}</text>
-                <text>{{tag}}</text>
+                wx:if="{{cart[item.id] && cart[item.id] > 0}}"
+                class="qty-btn qty-btn-minus"
+                bind:tap="onCartUpdate"
+                data-id="{{item.id}}"
+                data-delta="{{-1}}"
+              >−
+              </view>
+              <text wx:if="{{cart[item.id] && cart[item.id] > 0}}" class="qty-num">{{cart[item.id]}}</text>
+              <view
+                class="qty-btn qty-btn-plus"
+                bind:tap="onCartUpdate"
+                data-id="{{item.id}}"
+                data-delta="{{1}}"
+              >+
               </view>
             </view>
-            <text class="dish-desc">{{item.description}}</text>
-          </view>
-          <view class="qty-controls">
-            <view
-              wx:if="{{cart[item.id] && cart[item.id] > 0}}"
-              class="qty-btn qty-btn-minus"
-              bind:tap="onCartUpdate"
-              data-id="{{item.id}}"
-              data-delta="{{-1}}"
-            >−
-            </view>
-            <text wx:if="{{cart[item.id] && cart[item.id] > 0}}" class="qty-num">{{cart[item.id]}}</text>
-            <view
-              class="qty-btn qty-btn-plus"
-              bind:tap="onCartUpdate"
-              data-id="{{item.id}}"
-              data-delta="{{1}}"
-            >+
-            </view>
           </view>
         </view>
-      </view>
-    </scroll-view>
+      </scroll-view>
+    </view>
 
     <!-- 购物车栏 -->
     <view wx:if="{{totalItems > 0}}" class="cart-bar">
