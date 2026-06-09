@@ -29,6 +29,17 @@ export interface Order {
 
 export const MENU: Category[] = [
   {
+    id: 'chef-special',
+    name: '主厨拿手菜',
+    emoji: '👨‍🍳',
+    dishes: [
+      { id: 'cs-bobo-chicken', name: '钵钵鸡', description: '冷吃鸡肉串浸润红油芝麻，麻辣鲜香，回味悠长', emoji: '🐔', tags: ['厨师推荐', '辣'] },
+      { id: 'cs-braised-chicken', name: '红烧鸡', description: '土鸡块以酱油冰糖烧制，酱香浓郁，肉质紧实饱满', emoji: '🍗', tags: ['厨师推荐'] },
+      { id: 'cs-pepper-egg', name: '烧椒皮蛋', description: '青椒烤至焦香配溏心皮蛋，口感层次丰富，开胃凉菜', emoji: '🥚', tags: ['辣', '时令'] },
+      { id: 'cs-rib-soup', name: '排骨汤', description: '猪骨慢炖至汤色奶白，加入玉米萝卜，清甜滋补', emoji: '🍖', tags: ['养生'] },
+    ],
+  },
+  {
     id: 'hotpot',
     name: '火锅',
     emoji: '🍲',
