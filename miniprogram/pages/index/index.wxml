@@ -135,6 +135,9 @@
           <text class="cart-label">已选 {{totalItems}} 道菜</text>
           <text class="cart-chevron {{showCart ? 'cart-chevron-open' : ''}}">▶</text>
         </view>
+        <view class="cart-share {{generating ? 'cart-share-disabled' : ''}}" hover-class="press-scale" hover-start-time="50" bind:tap="onShareMenu">
+          <text class="cart-share-icon">📷</text>
+        </view>
         <view class="cart-submit {{submitting ? 'cart-submit-disabled' : ''}}" hover-class="press-scale" bind:tap="onSubmitOrder">
           <text class="cart-submit-text">{{submitting ? '提交中…' : '提交点菜'}}</text>
         </view>
@@ -290,5 +293,23 @@
 
   <!-- 提交成功提示 -->
   <view wx:if="{{submitted}}" class="toast-submit">✅ 已成功发送至厨房！</view>
+
+  <!-- 隐藏画布 -->
+  <canvas type="2d" id="shareCanvas" style="width: 375px; height: 600px; position: fixed; left: -9999px; top: 0;"></canvas>
+
+  <!-- 菜单图片预览 -->
+  <view wx:if="{{showMenuPreview}}" class="preview-overlay">
+    <view class="preview-card">
+      <text class="preview-title">菜单预览</text>
+      <view class="preview-body">
+        <image wx:if="{{menuImage}}" class="preview-image" src="{{menuImage}}" mode="widthFix" />
+        <view wx:else class="preview-loading">生成中…</view>
+      </view>
+      <view class="preview-actions">
+        <view class="preview-btn preview-btn-save {{!menuImage ? 'preview-btn-disabled' : ''}}" bind:tap="onSaveImage">保存到相册</view>
+        <view class="preview-btn preview-btn-close" bind:tap="onClosePreview">关闭</view>
+      </view>
+    </view>
+  </view>
 
 </view>

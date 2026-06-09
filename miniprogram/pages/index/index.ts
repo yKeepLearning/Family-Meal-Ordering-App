@@ -53,6 +53,9 @@ Page({
     submitted: false,
     submitting: false,
     searchQuery: '',
+    menuImage: '',
+    showMenuPreview: false,
+    generating: false,
     orderCounter: 1,
   },
 
@@ -93,6 +96,148 @@ Page({
       searchQuery: '',
       activeDishes: cat ? cat.dishes : [],
     })
+  },
+
+  onShareMenu() {
+    if (this.data.generating) return
+    const { cartItems } = this.data
+    if (cartItems.length === 0) return
+
+    this.setData({ generating: true, showMenuPreview: true })
+
+    const groups: { cat: string; items: CartItem[] }[] = []
+    const catMap = new Map<string, CartItem[]>()
+    for (const item of cartItems) {
+      const dish = findDish(item.id)
+      if (!dish) continue
+      const cat = MENU.find(c => c.dishes.some(d => d.id === item.id))
+      const catName = (cat && cat.name) || ''
+      if (!catMap.has(catName)) catMap.set(catName, [])
+      catMap.get(catName)!.push(item)
+    }
+    catMap.forEach((items, cat) => groups.push({ cat, items }))
+
+    const dpr = 2
+    const logicalW = 375
+    const pad = 16
+    let logicalH = 80
+    for (const g of groups) {
+      logicalH += 26 + g.items.length * 22 + 8
+    }
+    logicalH += 50
+    logicalH = Math.max(logicalH, 300)
+
+    const bufferW = Math.round(logicalW * dpr)
+    const bufferH = Math.round(logicalH * dpr)
+
+    const query = wx.createSelectorQuery()
+    query.select('#shareCanvas')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        if (!res || !res[0]) {
+          this.setData({ generating: false })
+          return
+        }
+        const canvas = res[0].node as WechatMiniprogram.Canvas
+        canvas.width = bufferW
+        canvas.height = bufferH
+        const ctx = canvas.getContext('2d') as any
+        ctx.scale(dpr, dpr)
+
+        ctx.fillStyle = '#fdf6ee'
+        ctx.fillRect(0, 0, logicalW, logicalH)
+
+        ctx.fillStyle = '#c0392b'
+        ctx.fillRect(0, 0, logicalW, 56)
+        ctx.fillStyle = '#ffffff'
+        ctx.font = 'bold 18px sans-serif'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText('家庭点菜 · 菜单', logicalW / 2, 30)
+
+        const now = new Date()
+        const dateStr = `${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}`
+        ctx.fillStyle = '#7a6150'
+        ctx.font = '11px sans-serif'
+        ctx.textAlign = 'right'
+        ctx.textBaseline = 'top'
+        ctx.fillText(dateStr, logicalW - pad, 64)
+
+        let y = 86
+        for (const g of groups) {
+          ctx.fillStyle = '#f5e6d3'
+          ctx.fillRect(pad, y, logicalW - pad * 2, 22)
+          ctx.fillStyle = '#1e1208'
+          ctx.font = 'bold 12px sans-serif'
+          ctx.textAlign = 'left'
+          ctx.textBaseline = 'middle'
+          ctx.fillText(g.cat, pad + 8, y + 11)
+          y += 26
+
+          for (const item of g.items) {
+            ctx.fillStyle = '#1e1208'
+            ctx.font = '13px sans-serif'
+            ctx.textAlign = 'left'
+            ctx.textBaseline = 'middle'
+            ctx.fillText(item.emoji + ' ' + item.name, pad + 8, y + 11)
+
+            ctx.fillStyle = '#c0392b'
+            ctx.font = 'bold 13px sans-serif'
+            ctx.textAlign = 'right'
+            ctx.fillText('×' + item.qty, logicalW - pad, y + 11)
+
+            y += 22
+          }
+          y += 4
+        }
+
+        const footerY = logicalH - 40
+        ctx.fillStyle = '#f5e6d3'
+        ctx.fillRect(0, footerY, logicalW, 40)
+        const totalQty = cartItems.reduce((s, i) => s + i.qty, 0)
+        ctx.fillStyle = '#1e1208'
+        ctx.font = 'bold 13px sans-serif'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText('共 ' + totalQty + ' 道菜', logicalW / 2, footerY + 20)
+
+        wx.canvasToTempFilePath({
+          canvas,
+          x: 0,
+          y: 0,
+          width: bufferW,
+          height: bufferH,
+          destWidth: bufferW,
+          destHeight: bufferH,
+          fileType: 'png',
+          quality: 1,
+          success: (res2: any) => {
+            this.setData({ menuImage: res2.tempFilePath, generating: false })
+          },
+          fail: () => {
+            this.setData({ generating: false })
+            wx.showToast({ title: '图片生成失败', icon: 'none' })
+          },
+        })
+      })
+  },
+
+  onSaveImage() {
+    const { menuImage } = this.data
+    if (!menuImage) return
+    wx.saveImageToPhotosAlbum({
+      filePath: menuImage,
+      success: () => {
+        wx.showToast({ title: '已保存到相册', icon: 'success' })
+      },
+      fail: () => {
+        wx.showToast({ title: '保存失败，请授权相册权限', icon: 'none' })
+      },
+    })
+  },
+
+  onClosePreview() {
+    this.setData({ showMenuPreview: false })
   },
 
   onCartUpdate(e: WechatMiniprogram.TouchEvent) {
